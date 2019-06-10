@@ -1,2 +1,2 @@
 # blog
-Record some of the knowledge I have learned. 
+Record some of contents I have learned. 
